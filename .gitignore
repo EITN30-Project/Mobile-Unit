@@ -1,0 +1,105 @@
+# -------------------------
+# Python cache / bytecode
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# -------------------------
+# Virtual environments
+# -------------------------
+venv/
+env/
+.venv/
+ENV/
+
+# -------------------------
+# macOS / OS junk
+# -------------------------
+.DS_Store
+__MACOSX/
+Thumbs.db
+
+# -------------------------
+# Windows-specific files
+# -------------------------
+#Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Windows shortcut files
+*.lnk
+
+# Visual Studio / VS Code
+.vs/
+
+# Python virtualenv scripts on Windows
+Scripts/
+
+# Windows Python cache
+*.pyc
+
+# -------------------------
+# IDE / editor files
+# -------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -------------------------
+# Python tooling caches
+# -------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# -------------------------
+# Build artifacts
+# -------------------------
+build/
+dist/
+*.egg-info/
+
+# -------------------------
+# Logs / runtime artifacts
+# -------------------------
+*.log
+*.out
+*.pid
+
+# -------------------------
+# Environment / secrets
+# -------------------------
+.env
+.env.*
+config.local.py
+
+# -------------------------
+# Performance output files
+# -------------------------
+performance/*.csv
+performance/*.json
+performance/*.png
+
+# Optional: ignore all generated performance artifacts
+# but keep scripts
+# -------------------------
+# performance/output/
+
+# -------------------------
+# Network capture files
+# -------------------------
+*.pcap
+*.cap
+*.dump
+
+# -------------------------
+# Temporary files
+# -------------------------
+tmp/
+temp/
+*.tmp
