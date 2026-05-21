@@ -17,3 +17,6 @@ sudo ip route add default via 10.0.0.1 dev tun0
 
 # Set DNS so name resolution works
 echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+
+# Make sure it does not default through wlan0 when TUN IP is blocked
+sudo ip route del default via 10.15.10.180 dev wlan0

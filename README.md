@@ -27,6 +27,7 @@ python3 open_tun_loop.py
 (Make sure base-station is set up to this point too)
 In another terminal:
 ```bash
+ping 10.0.0.1
 ping 8.8.8.8
 ``` 
 # Step 5

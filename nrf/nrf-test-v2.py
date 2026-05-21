@@ -79,8 +79,8 @@ def loopback_test(tx_radio, rx_radio):
     rx_radio.startListening()
 
     # Put TX radio into transmit mode
-    tx_radio.openWritingPipe(RX_ADDRESS)
-    tx_radio.stopListening()
+    #tx_radio.openWritingPipe(RX_ADDRESS)
+    tx_radio.stopListening(RX_ADDRESS)    # new API — sets address and enters TX mode
 
     print(f"\n📡  Loopback test — sending {NUM_PACKETS} packets "
           f"(radio1 → radio0) ...\n")
@@ -92,6 +92,8 @@ def loopback_test(tx_radio, rx_radio):
         # write() blocks until ACK received or max retries exhausted
         acked = tx_radio.write(payload)
 
+        tx_radio.flush_tx()    #added this --> debugging
+
         if not acked:
             print(f"  ❌  Packet {i}: TX failed — no ACK from radio0")
             print(f"       Is radio0 in RX mode?  Check CE/CSN wiring for SPI0.")
@@ -100,7 +102,8 @@ def loopback_test(tx_radio, rx_radio):
         # ACK received; now read from RX FIFO
         deadline = time.monotonic() + 0.25
         while not rx_radio.available() and time.monotonic() < deadline:
-            pass
+            #pass
+            time.sleep(0.001)   # debugging
 
         if not rx_radio.available():
             print(f"  ⚠️   Packet {i}: ACK received but RX FIFO empty "

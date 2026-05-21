@@ -36,16 +36,16 @@ def init_radio(ce_pin, csn_pin, tx_addr, rx_addr, label, listen=True):
         print(f"{label}: hardware not responding")
         return None
 
-    radio.setPALevel(RF24_PA_LOW)
-    radio.setDataRate(RF24_1MBPS)
+    radio.setPALevel(RF24_PA_LOW) # Power Amplifier  - Ctrls tx strength
+    radio.setDataRate(RF24_1MBPS)  # controls tx speed
     radio.setChannel(CHANNEL)
 
     radio.setAutoAck(True)
-    radio.enableDynamicPayloads()
+    radio.enableDynamicPayloads() # to override the default fix packet length.
 
     # Pipes
-    radio.openWritingPipe(tx_addr)
-    radio.openReadingPipe(1, rx_addr)
+    radio.openWritingPipe(tx_addr) # only one pipe at a time
+    radio.openReadingPipe(1, rx_addr) # can have up to 6 rx pipes.
 
     if listen:
         radio.startListening()
@@ -110,6 +110,7 @@ def radio_writer(radio, tx_q):
                 success = radio.write(frag)
                 if not success:
                     print(f"[radio_writer] fragment send failed, dropping packet")
+                    # TODO: keep track of dropped packets later
                     break
         except Exception as e:
             print(f"[radio_writer] error: {e}")
