@@ -70,6 +70,9 @@ def run_iperf3(rate_bps):
     return json.loads(result.stdout)
 
 def parse_ping_rtt(ping_output):
+    # r'...' -> raw string
+    # [\d.]+ -> one or more digits or decimal points
+    # With () -> save matched value to retrieve later
     match = re.search(r'rtt min/avg/max/mdev = [\d.]+/([\d.]+)/', ping_output)   # extract average RTT from the ping output
     return float(match.group(1)) if match else None
 
@@ -78,7 +81,7 @@ def measure(rate_bps):
 
     # Run ping during iperf3 explicitly (or longer ping window)??
     # Right now ping and iperf3 are not synchronised --> adds noise
-    # HOWEVER, timing mismatch is actually small and acceptable
+    # HOWEVER, timing mismatch is very small
     ping_proc = run_ping()
     iperf_data = run_iperf3(rate_bps)
     ping_output, _ = ping_proc.communicate()
@@ -94,19 +97,20 @@ def measure(rate_bps):
     if not recv:
         raise ValueError(f"Bad iperf3 output: {end}")
 
-    output_bps = recv.get("bits_per_second", 0)
-    jitter_ms  = recv.get("jitter_ms", 0)
-    loss_pct   = recv.get("lost_percent", 0)
+    # get the measurement we need, return 0 if it does not exist
+    output_bps = recv.get("bits_per_second", 0)    # actual measured throughput
+    jitter_ms = recv.get("jitter_ms", 0)        # packet timing variation
+    loss_pct = recv.get("lost_percent", 0)        # percentage of dropped packets
 
-    rtt_avg    = parse_ping_rtt(ping_output)
+    rtt_avg = parse_ping_rtt(ping_output)
 
     print(f"  → out={output_bps:.0f} bps | jitter={jitter_ms:.3f} ms | loss={loss_pct:.1f}% | rtt={rtt_avg} ms")
 
     return {
-        "input_bps":  rate_bps,
+        "input_bps": rate_bps,
         "output_bps": round(output_bps, 2),
-        "jitter_ms":  round(jitter_ms, 3),
-        "loss_pct":   round(loss_pct, 2),
+        "jitter_ms": round(jitter_ms, 3),    # often smaller values -> more precision
+        "loss_pct": round(loss_pct, 2),
         "rtt_avg_ms": rtt_avg
     }
 
@@ -114,15 +118,15 @@ def measure(rate_bps):
 def save_json(results):
     output = {
         "meta": {
-            "base_ip":    BASE_IP,
+            "base_ip": BASE_IP,
             "duration_s": DURATION,
-            "timestamp":  datetime.now().isoformat(timespec="seconds")
+            "timestamp": datetime.now().isoformat(timespec="seconds")
         },
         "units": {
-            "input_bps":  "bps",
+            "input_bps": "bps",
             "output_bps": "bps",
-            "jitter_ms":  "ms",
-            "loss_pct":   "%",
+            "jitter_ms": "ms",
+            "loss_pct": "%",
             "rtt_avg_ms": "ms"
         },
         "results": results
